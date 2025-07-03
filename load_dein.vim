@@ -24,6 +24,12 @@ call dein#add('Shougo/dein.vim')
 " Add other plugins here
 call dein#add('jw3126/nvim-hello-world')
 
+  " --- Markdown Plugins ---
+  call dein#add('godlygeek/tabular')
+  call dein#add('preservim/vim-markdown')
+  call dein#add('iamcco/markdown-preview.nvim', { 'build': 'call mkdp#util#install()', 'on_ft': ['markdown', 'pandoc'] })
+  " -------------------------
+
 call dein#end()
 call dein#save_state()
 
