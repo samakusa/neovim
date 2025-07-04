@@ -59,7 +59,7 @@ local on_attach = function(client, bufnr)
 end
 
 -- Enable some language servers with the generic settings
-local servers = { 'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'jdtls', 'csharp_ls', 'powershell_es', 'vimls', 'lua_ls' }
+local servers = { 'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'jdtls', 'csharp_ls', 'powershell_es', 'vimls', 'lua_ls', 'html', 'cssls' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
