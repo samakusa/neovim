@@ -17,8 +17,14 @@ set noswapfile
 set tabstop=4
 set hlsearch
 
-source ~\AppData\Local\nvim\load_ime_control.vim
-
 " Load dein.vim configuration
 let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim-plugins/dein')
 source ~/AppData/Local/nvim/load_dein.vim
+
+source $HOME/AppData/Local/nvim/load_ime_control.vim
+
+lua << EOF
+  local config_path = vim.fn.stdpath('config')
+  package.path = package.path .. ';' .. config_path .. '/?.lua'
+  require('lsp_settings')
+EOF

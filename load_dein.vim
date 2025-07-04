@@ -30,6 +30,19 @@ call dein#add('jw3126/nvim-hello-world')
   call dein#add('iamcco/markdown-preview.nvim', { 'build': 'call mkdp#util#install()', 'on_ft': ['markdown', 'pandoc'] })
   " -------------------------
 
+  " --- Completion Plugins ---
+  call dein#add('neovim/nvim-lspconfig')
+  call dein#add('hrsh7th/nvim-cmp')
+  call dein#add('hrsh7th/cmp-nvim-lsp')
+  call dein#add('hrsh7th/cmp-buffer')
+  call dein#add('hrsh7th/cmp-path')
+  call dein#add('hrsh7th/cmp-cmdline')
+  call dein#add('L3MON4D3/LuaSnip')
+  call dein#add('saadparwaiz1/cmp_luasnip')
+  call dein#add('rafamadriz/friendly-snippets')
+  call dein#add('mfussenegger/nvim-jdtls')
+  " -------------------------
+
 call dein#end()
 call dein#save_state()
 
