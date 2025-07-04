@@ -67,6 +67,13 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+-- PowerShell Language Server
+lspconfig.powershell_es.setup{
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { "pwsh", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "[System.Console]::InputEncoding=[System.Text.Encoding]::UTF8;[System.Console]::OutputEncoding=[System.Text.Encoding]::UTF8;PowerShellEditorServices.Hosting.EditorServicesHost start --hostName \"Neovim\" --hostProfileId \"neovim\" --hostVersion 0.1.0 --additionalModules @() --featureFlags @() --logLevel \"Normal\" --logPath \"~/.cache/nvim/pses.log\" --sessionDetailsPath \"~/.cache/nvim/pses-session.json\" --bundledModulesPath \"~/.local/share/nvim/PowerShellEditorServices\""}
+}
+
 -- Lua Language Server
 lspconfig.lua_ls.setup {
   on_attach = on_attach,
