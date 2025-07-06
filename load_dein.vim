@@ -30,6 +30,10 @@ call dein#add('jw3126/nvim-hello-world')
   call dein#add('iamcco/markdown-preview.nvim', { 'build': 'call mkdp#util#install()', 'on_ft': ['markdown', 'pandoc'] })
   " -------------------------
 
+  " --- HTML Preview Plugin ---
+  call dein#add('brianhuster/live-preview.nvim', { 'on_ft': ['html'] })
+  " ---------------------------
+
   " --- Completion Plugins ---
   call dein#add('neovim/nvim-lspconfig')
   call dein#add('hrsh7th/nvim-cmp')
