@@ -29,3 +29,5 @@ lua << EOF
   package.path = package.path .. ';' .. config_path .. '/?.lua'
   require('lsp_settings')
 EOF
+
+source $HOME/AppData/Local/nvim/markdown-preview-settings.vim
