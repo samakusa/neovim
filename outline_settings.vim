@@ -14,7 +14,7 @@ let g:vista_ctags_cmd = {
 let g:vista_auto_close_outline = 1
 
 " Vista の表示をトグルするコマンド
-nnoremap <silent> <Leader>o :Vista!!<CR>
+nnoremap <silent> <C-k> :Vista!!<CR>
 
 " Vista で選択後、アウトラインを自動的に閉じる
 autocmd User VistaJumpPost execute g:vista_auto_close_outline ? ':Vista! -c' : ''
