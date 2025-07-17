@@ -30,6 +30,12 @@ call dein#add('jw3126/nvim-hello-world')
   call dein#add('iamcco/markdown-preview.nvim', { 'build': 'call mkdp#util#install()', 'on_ft': ['markdown', 'pandoc'] })
   " -------------------------
 
+  " --- Outline/Navigation Plugins ---
+  call dein#add('liuchengxu/vista.vim')
+  call dein#add('junegunn/fzf', {'build': './install --all'})
+  call dein#add('junegunn/fzf.vim')
+  " ----------------------------------
+
   " --- HTML Preview Plugin ---
   call dein#add('brianhuster/live-preview.nvim', { 'on_ft': ['html'] })
   " ---------------------------

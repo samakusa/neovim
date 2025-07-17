@@ -23,6 +23,7 @@ let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim-plugins/dein')
 source ~/AppData/Local/nvim/load_dein.vim
 
 source $HOME/AppData/Local/nvim/load_ime_control.vim
+source $HOME/AppData/Local/nvim/outline_settings.vim
 
 lua << EOF
   local config_path = vim.fn.stdpath('config')
