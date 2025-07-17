@@ -11,15 +11,10 @@ let g:vista_ctags_cmd = {
 
 " 自動非表示機能を制御するグローバル変数を定義
 " 0で無効、1で有効
-let g:vista_auto_close_outline = 1
+let g:vista_close_on_jump = 1
 
 " Vista の表示をトグルするコマンド
 nnoremap <silent> <C-k> :Vista!!<CR>
-
-" Vista で選択後、アウトラインを自動的に閉じる
-autocmd User VistaJumpPost execute g:vista_auto_close_outline ? ':Vista! -c' : ''
-" または
-" autocmd User VistaJumpPost if g:vista_auto_close_outline | Vista! -c | endif
 
 " Markdown ファイルタイプでのみ Vista を有効にする例
 autocmd FileType markdown silent! Vista!
