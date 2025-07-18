@@ -1,6 +1,8 @@
 -- 診断マーク(E, Wなど)を左端に表示しないようにする
 vim.diagnostic.config({
+  virtual_text = true,
   signs = false,
+  severity_sort = true,
 })
 
 -- Setup nvim-cmp.
@@ -44,18 +46,6 @@ local on_attach = function(client, bufnr)
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
-
-  -- カーソルホバーで診断メッセージをフロート表示する
-  vim.api.nvim_create_autocmd('CursorHold', {
-    buffer = bufnr,
-    callback = function()
-      vim.diagnostic.open_float(nil, {
-        scope = 'line',      -- 現在行の診断のみ表示
-        source = 'always',   -- 診断のソース元(LSP名等)を常に表示
-        focusable = false,   -- フロートウィンドウにフォーカスしない
-      })
-    end
-  })
 
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
