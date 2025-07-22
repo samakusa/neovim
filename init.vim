@@ -18,6 +18,8 @@ set tabstop=4
 set hlsearch
 set fileencodings=ucs-bom,utf-8,sjis,euc-jp
 
+nnoremap <silent> <C-n> :set number!<CR>
+
 " Load dein.vim configuration
 let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim-plugins/dein')
 source ~/AppData/Local/nvim/load_dein.vim
