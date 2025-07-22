@@ -25,7 +25,7 @@ call dein#add('Shougo/dein.vim')
 call dein#add('jw3126/nvim-hello-world')
 
   " --- Theme & Syntax Highlighting ---
-  call dein#add('folke/tokyonight.nvim')
+  call dein#add('EdenEast/nightfox.nvim')
   call dein#add('nvim-treesitter/nvim-treesitter', {'build': ':TSUpdate'})
   " -----------------------------------
 

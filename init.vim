@@ -33,9 +33,8 @@ lua << EOF
   require('lsp_settings')
 
   -- Theme and Treesitter settings
-  -- Set colorscheme
-  vim.g.tokyonight_style = "storm" -- or "night", "day"
-  vim.cmd('colorscheme tokyonight')
+  -- Set colorscheme to carbonfox (a style from nightfox)
+  vim.cmd('colorscheme carbonfox')
 
   -- Setup nvim-treesitter
   require'nvim-treesitter.configs'.setup {
