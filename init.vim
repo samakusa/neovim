@@ -7,7 +7,7 @@ set list
 set listchars=eol:$,tab:`\ ,trail:@
 set splitright
 set splitbelow
-set clipboard=unnamed
+set clipboard=unnamedplus
 set incsearch
 set ignorecase
 set encoding=utf-8
