@@ -19,10 +19,10 @@ endif
 
 call dein#begin(s:dein_dir)
 
-call dein#add('Shougo/dein.vim')
+  call dein#add('Shougo/dein.vim')
 
-" Add other plugins here
-call dein#add('jw3126/nvim-hello-world')
+  " Add other plugins here
+  call dein#add('jw3126/nvim-hello-world')
 
   " --- Theme & Syntax Highlighting ---
   call dein#add('EdenEast/nightfox.nvim')
@@ -33,6 +33,7 @@ call dein#add('jw3126/nvim-hello-world')
   call dein#add('godlygeek/tabular')
   call dein#add('preservim/vim-markdown')
   call dein#add('iamcco/markdown-preview.nvim', { 'build': 'call mkdp#util#install()', 'on_ft': ['markdown', 'pandoc'] })
+  call dein#add('dhruvasagar/vim-table-mode')
   " -------------------------
 
   " --- Outline/Navigation Plugins ---
