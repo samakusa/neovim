@@ -79,13 +79,12 @@ end
 
 -- Define all servers to be managed by lspconfig
 local servers = {
-  'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'jdtls', 'csharp_ls', 
+  'ruff', 'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'jdtls', 'csharp_ls', 
   'vimls', 'html', 'cssls', 'jsonls', 'lua_ls', 'powershell_es'
 }
 
 -- Servers that need a specific command different from the lspconfig default
 local custom_cmds = {
-  pyright = { "pyright-langserver", "--stdio" },
   ts_ls = { "typescript-language-server", "--stdio" },
   vimls = { "vim-language-server", "--stdio" },
   html = { "html-languageserver", "--stdio" },
@@ -95,6 +94,26 @@ local custom_cmds = {
 
 -- Servers that need more complex, custom options (overrides custom_cmds)
 local custom_opts = {
+  ruff = {
+    cmd = { vim.fn.expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/ruff.exe'), "server" },
+  },
+
+  pyright = {
+    cmd = { vim.fn.expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/pyright-langserver.exe'), '--stdio' },
+    handlers = {
+      -- pyrightからの診断メッセージを無視する空の関数を定義
+      ["textDocument/publishDiagnostics"] = function() end,
+    },
+    -- pyrightの診断機能(エラー表示)を無効化し、他の機能(ハイライト等)のみを利用する
+    settings = {
+      python = {
+        analysis = {
+          diagnosticMode = "off",
+        }
+      }
+    }
+  },
+
   lua_ls = {
     settings = {
       Lua = {
@@ -105,6 +124,7 @@ local custom_opts = {
       },
     },
   },
+
   powershell_es = {
     cmd = {
         "pwsh",
@@ -159,7 +179,14 @@ vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
   group = lsp_highlight_group,
   pattern = '*',
   callback = function()
-    vim.lsp.buf.document_highlight()
+    -- 現在のバッファでアクティブなLSPクライアントを取得し、
+    -- documentHighlight機能をサポートしているか確認する
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+      if client.supports_method('textDocument/documentHighlight') then
+        vim.lsp.buf.document_highlight()
+        return
+      end
+    end
   end,
 })
 
