@@ -17,6 +17,7 @@ set noswapfile
 set tabstop=4
 set hlsearch
 set fileencodings=ucs-bom,utf-8,sjis,euc-jp
+set updatetime=300
 
 nnoremap <silent> <C-n> :set number!<CR>
 

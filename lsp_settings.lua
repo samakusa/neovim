@@ -151,3 +151,23 @@ end
 --     root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
 -- }
 
+-- シンボルハイライトのためのautocmdグループを作成
+local lsp_highlight_group = vim.api.nvim_create_augroup('LspSymbolHighlight', { clear = true })
+
+-- カーソルが停止した時に、カーソル下のシンボルをハイライトする
+vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+  group = lsp_highlight_group,
+  pattern = '*',
+  callback = function()
+    vim.lsp.buf.document_highlight()
+  end,
+})
+
+-- カーソルが移動したらハイライトを消す
+vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+  group = lsp_highlight_group,
+  pattern = '*',
+  callback = function()
+    vim.lsp.buf.clear_references()
+  end,
+})
