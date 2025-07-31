@@ -95,11 +95,11 @@ local custom_cmds = {
 -- Servers that need more complex, custom options (overrides custom_cmds)
 local custom_opts = {
   ruff = {
-    cmd = { vim.fn.expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/ruff.exe'), "server" },
+    cmd = { vim.g.ruff_lsp_cmd, "server" },
   },
 
   pyright = {
-    cmd = { vim.fn.expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/pyright-langserver.exe'), '--stdio' },
+    cmd = { vim.g.pyright_lsp_cmd, '--stdio' },
     handlers = {
       -- pyrightからの診断メッセージを無視する空の関数を定義
       ["textDocument/publishDiagnostics"] = function() end,
@@ -137,7 +137,7 @@ local custom_opts = {
             "[System.Console]::InputEncoding=[System.Text.Encoding]::UTF8; [System.Console]::OutputEncoding=[System.Text.Encoding]::UTF8; PowerShellEditorServices.Hosting.EditorServicesHost start --hostName 'Neovim' --hostProfileId 'neovim' --hostVersion 0.1.0 --additionalModules @() --featureFlags @() --logLevel 'Normal' --logPath '%s' --sessionDetailsPath '%s' --bundledModulesPath '%s'",
             vim.fn.expand("~/.cache/nvim/pses.log"),
             vim.fn.expand("~/.cache/nvim/pses-session.json"),
-            vim.fn.expand("~/AppData/Local/lsp-server/PowerShellEditorServices")
+            vim.g.powershell_es_module_path
         )
     }
   }

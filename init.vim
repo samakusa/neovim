@@ -1,3 +1,24 @@
+" OSごとのパス設定をinit.vimに統合
+if has('win32')
+  let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim-plugins/dein')
+  let g:ruff_lsp_cmd = expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/ruff.exe')
+  let g:pyright_lsp_cmd = expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/pyright-langserver.exe')
+  let g:powershell_es_module_path = expand('~/AppData/Local/lsp-server/PowerShellEditorServices')
+  let s:config_dir = expand('~/AppData/Local/nvim')
+elseif has('mac')
+  let g:dein_plugin_root_dir = expand('~/.config/nvim-plugins/dein')
+  let g:ruff_lsp_cmd = expand('~/.config/nvim-ruff/.venv/bin/ruff')
+  let g:pyright_lsp_cmd = expand('~/.volta/bin/pyright-langserver')
+  let g:powershell_es_module_path = expand('~/.local/share/PowerShellEditorServices')
+  let s:config_dir = expand('~/.config/nvim')
+else
+  let g:dein_plugin_root_dir = expand('~/.local/share/nvim/dein')
+  let g:ruff_lsp_cmd = expand('~/.local/bin/ruff')
+  let g:pyright_lsp_cmd = expand('~/.local/bin/pyright-langserver')
+  let g:powershell_es_module_path = expand('~/.local/share/PowerShellEditorServices')
+  let s:config_dir = expand('~/.config/nvim')
+endif
+
 set shiftwidth=4
 set expandtab
 set laststatus=2
@@ -22,11 +43,10 @@ set updatetime=300
 nnoremap <silent> <C-n> :set number!<CR>
 
 " Load dein.vim configuration
-let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim-plugins/dein')
-source ~/AppData/Local/nvim/load_dein.vim
+execute 'source' s:config_dir . '/load_dein.vim'
 
-source $HOME/AppData/Local/nvim/load_ime_control.vim
-source $HOME/AppData/Local/nvim/outline_settings.vim
+execute 'source' s:config_dir . '/load_ime_control.vim'
+execute 'source' s:config_dir . '/outline_settings.vim'
 
 lua << EOF
   local config_path = vim.fn.stdpath('config')
@@ -59,4 +79,4 @@ lua << EOF
   }
 EOF
 
-source $HOME/AppData/Local/nvim/markdown-preview-settings.vim
+execute 'source' s:config_dir . '/markdown-preview-settings.vim'

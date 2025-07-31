@@ -1,6 +1,5 @@
 " NOTE: Add the following lines to your init.vim to enable dein.vim configuration:
 " let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim/plugin')
-" source ~/.config/nvim/init_dein.vim
 
 if &compatible
   set nocompatible
