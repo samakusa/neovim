@@ -1,8 +1,8 @@
 " OSごとのパス設定をinit.vimに統合
 if has('win32')
   let g:dein_plugin_root_dir = expand('~/AppData/Local/nvim-plugins/dein')
-  let g:ruff_lsp_cmd = expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/ruff.exe')
-  let g:pyright_lsp_cmd = expand('~/AppData/Local/nvim-ruff-lsp/.venv/Scripts/pyright-langserver.exe')
+  let g:ruff_lsp_cmd = expand('~/AppData/Local/nvim-ruff/.venv/Scripts/ruff.exe')
+  let g:pyright_lsp_cmd = expand('~/AppData/Local/nvim-ruff/.venv/Scripts/pyright-langserver.exe')
   let g:powershell_es_module_path = expand('~/AppData/Local/lsp-server/PowerShellEditorServices')
   let s:config_dir = expand('~/AppData/Local/nvim')
 elseif has('mac')
