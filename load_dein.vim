@@ -23,11 +23,6 @@ call dein#begin(s:dein_dir)
   " Add other plugins here
   call dein#add('jw3126/nvim-hello-world')
 
-  " --- Theme & Syntax Highlighting ---
-  call dein#add('EdenEast/nightfox.nvim')
-  call dein#add('nvim-treesitter/nvim-treesitter', {'build': ':TSUpdate'})
-  " -----------------------------------
-
   " --- Markdown Plugins ---
   call dein#add('godlygeek/tabular')
   call dein#add('preservim/vim-markdown')

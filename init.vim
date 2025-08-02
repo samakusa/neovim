@@ -52,31 +52,6 @@ lua << EOF
   local config_path = vim.fn.stdpath('config')
   package.path = package.path .. ';' .. config_path .. '/?.lua'
   require('lsp_settings')
-
-  -- Theme and Treesitter settings
-  -- Set colorscheme to carbonfox (a style from nightfox)
-  vim.cmd('colorscheme carbonfox')
-
-  -- Setup nvim-treesitter
-  require'nvim-treesitter.configs'.setup {
-    -- A list of parser names, or "all"
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "javascript", "typescript", "python", "rust", "html", "css", "json", "markdown" },
-
-    -- Install parsers synchronously (only applied to `ensure_installed`)
-    sync_install = false,
-
-    -- Automatically install missing parsers when entering buffer
-    auto_install = true,
-
-    highlight = {
-      enable = true,
-      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-      -- Using this option may slow down your editor, and you may see some duplicate highlights.
-      -- Instead of true it can also be a list of languages
-      additional_vim_regex_highlighting = false,
-    },
-  }
 EOF
 
 execute 'source' s:config_dir . '/markdown-preview-settings.vim'
