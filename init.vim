@@ -47,11 +47,13 @@ execute 'source' s:config_dir . '/load_dein.vim'
 
 execute 'source' s:config_dir . '/load_ime_control.vim'
 execute 'source' s:config_dir . '/outline_settings.vim'
+execute 'source' s:config_dir . '/markdown-preview-settings.vim'
 
 lua << EOF
   local config_path = vim.fn.stdpath('config')
   package.path = package.path .. ';' .. config_path .. '/?.lua'
   require('lsp_settings')
+  require('treesitter_settings')
 EOF
 
-execute 'source' s:config_dir . '/markdown-preview-settings.vim'
+colorscheme molokai

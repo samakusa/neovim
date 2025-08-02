@@ -53,6 +53,11 @@ call dein#begin(s:dein_dir)
   call dein#add('mfussenegger/nvim-jdtls')
   " -------------------------
 
+  " --- Syntax Highlighting Plugins ---
+  call dein#add('nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'})
+  call dein#add('tomasr/molokai')
+  " ---------------------------------
+
 call dein#end()
 call dein#save_state()
 
