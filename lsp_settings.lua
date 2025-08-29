@@ -80,7 +80,7 @@ end
 -- Define all servers to be managed by lspconfig
 local servers = {
   'ruff', 'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'jdtls', 'csharp_ls', 
-  'vimls', 'html', 'cssls', 'jsonls', 'lua_ls', 'powershell_es'
+  'vimls', 'html', 'cssls', 'jsonls', 'lua_ls', 'powershell_es', 'eslint'
 }
 
 -- Servers that need a specific command different from the lspconfig default
