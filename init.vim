@@ -36,11 +36,12 @@ set iminsert=0
 set imsearch=0
 set noswapfile
 set tabstop=4
-set hlsearch
+set nohlsearch
 set fileencodings=ucs-bom,utf-8,sjis,euc-jp
 set updatetime=300
 
 nnoremap <silent> <C-n> :set number!<CR>
+nnoremap <silent> <C-h> :set hlsearch!<CR>
 
 " Load dein.vim configuration
 execute 'source' s:config_dir . '/load_dein.vim'
