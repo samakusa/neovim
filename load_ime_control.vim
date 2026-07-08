@@ -10,7 +10,7 @@ elseif has('mac')
   augroup ime_control_mac
     autocmd!
     " Normal Modeに入る際に英数入力モードに切り替える
-    autocmd InsertLeave * call system('im-select im-select com.google.inputmethod.Japanese.Roman')
+    autocmd InsertLeave * call system('im-select com.google.inputmethod.Japanese.Roman')
     " Insert Modeに入る際には、IMEの状態を変更しない（手動での切り替えを想定）
   augroup END
 else
