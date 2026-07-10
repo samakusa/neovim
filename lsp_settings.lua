@@ -87,9 +87,6 @@ local servers = {
 local custom_cmds = {
   ts_ls = { "typescript-language-server", "--stdio" },
   vimls = { "vim-language-server", "--stdio" },
-  html = { "html-languageserver", "--stdio" },
-  cssls = { "css-languageserver", "--stdio" },
-  jsonls = { "json-languageserver", "--stdio" }
 }
 
 -- Servers that need more complex, custom options (overrides custom_cmds)
