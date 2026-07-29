@@ -19,6 +19,8 @@ else
   let s:config_dir = expand('~/.config/nvim')
 endif
 
+execute 'source' s:config_dir . '/lsp_settings.vim'
+
 set shiftwidth=4
 set expandtab
 set laststatus=2
