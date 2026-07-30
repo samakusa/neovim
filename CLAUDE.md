@@ -11,7 +11,7 @@ A detailed design doc already exists at `docs/基本設計書.md` — read it fo
 ## Commands
 
 - **Deploy config to the live Neovim config dir**: `./deploy.sh`
-  Uses `rsync -av --delete` from the repo root into `$HOME/.config/nvim`, excluding `.git`, `node_modules`, `docs`, `.gitignore`, `package.json`, `package-lock.json`, `deploy.sh`. Because of `--delete`, any file present in the live config dir but not in this repo gets removed — be careful before running it if the live dir has untracked local state.
+  Uses `rsync -av --delete --delete-excluded` from the repo root into `$HOME/.config/nvim`, excluding `.git`, `node_modules`, `docs`, `.gitignore`, `package.json`, `package-lock.json`, `deploy.sh`, `.claude`. Because of `--delete`, any file present in the live config dir but not in this repo gets removed — be careful before running it if the live dir has untracked local state. Because of `--delete-excluded`, excluded paths (e.g. a stray `.claude/` that previously leaked into the live dir) are actively removed from the live dir too, not just skipped.
 - **Lint (TypeScript sample/config)**: `npx eslint .` (uses root `.eslintrc.json`; `eslint`/`typescript`/`@typescript-eslint/*` are devDependencies in `package.json`)
 - There is no test suite (`npm test` is a placeholder that exits with an error) and no build step — this repo ships Vim script/Lua config files directly.
 

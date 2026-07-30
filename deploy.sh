@@ -13,7 +13,8 @@ echo "Deploying Neovim config to $NVIM_CONFIG_DIR..."
 
 # rsyncでファイルを同期
 # --excludeで不要なファイルやディレクトリを除外する
-rsync -av --delete \
+# --delete-excludedにより、除外対象はデプロイ先に既に存在していても削除する
+rsync -av --delete --delete-excluded \
   --exclude=".git" \
   --exclude="node_modules" \
   --exclude="docs" \
@@ -21,6 +22,7 @@ rsync -av --delete \
   --exclude="package.json" \
   --exclude="package-lock.json" \
   --exclude="deploy.sh" \
+  --exclude=".claude" \
   "$SOURCE_DIR/" "$NVIM_CONFIG_DIR/"
 
 echo "Done."

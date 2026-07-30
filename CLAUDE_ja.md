@@ -11,7 +11,7 @@
 ## コマンド
 
 - **設定を実際のNeovim設定ディレクトリへデプロイする**: `./deploy.sh`
-  リポジトリルートから`$HOME/.config/nvim`へ`rsync -av --delete`で同期する。除外対象は`.git`、`node_modules`、`docs`、`.gitignore`、`package.json`、`package-lock.json`、`deploy.sh`。`--delete`オプションを使用しているため、実行環境の設定ディレクトリ内に存在しリポジトリには存在しないファイルは削除される点に注意。実行環境側に未追跡のローカル状態がある場合は、実行前に注意が必要。
+  リポジトリルートから`$HOME/.config/nvim`へ`rsync -av --delete --delete-excluded`で同期する。除外対象は`.git`、`node_modules`、`docs`、`.gitignore`、`package.json`、`package-lock.json`、`deploy.sh`、`.claude`。`--delete`オプションを使用しているため、実行環境の設定ディレクトリ内に存在しリポジトリには存在しないファイルは削除される点に注意。実行環境側に未追跡のローカル状態がある場合は、実行前に注意が必要。また`--delete-excluded`により、除外対象のパス(例: 以前デプロイ先に混入していた`.claude/`)はデプロイ先に既に存在していても削除される。
 - **Lint（TypeScriptのサンプル/設定用）**: `npx eslint .`（ルートの`.eslintrc.json`を使用。`eslint`/`typescript`/`@typescript-eslint/*`は`package.json`のdevDependenciesとして定義）
 - テストスイートは存在しない（`npm test`はエラーを返すプレースホルダー）。ビルドステップもない。本リポジトリはVim script/Luaの設定ファイルをそのまま配布する構成である。
 
