@@ -33,9 +33,10 @@ cmp.setup({
   })
 })
 
--- Setup lspconfig.
+-- Setup LSP servers via the new vim.lsp.config()/vim.lsp.enable() API
+-- (see :help lspconfig-nvim-0.11 ; require('lspconfig').<server>.setup{} is
+-- deprecated and will be removed in nvim-lspconfig v3.0.0).
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-local lspconfig = require'lspconfig'
 
 -- Generic keymappings
 local on_attach = function(client, bufnr)
@@ -140,33 +141,38 @@ local custom_opts = {
   }
 }
 
--- Setup all servers in a single loop
+-- Shared defaults applied to every server (equivalent to the old per-server
+-- `on_attach`/`capabilities` merge in the setup loop below).
+vim.lsp.config('*', {
+  on_attach = on_attach,
+  capabilities = capabilities,
+})
+
+-- Configure all servers in a single loop, then enable them
 for _, server_name in ipairs(servers) do
-  local opts = {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }
+  local opts = {}
 
   if custom_opts[server_name] then
-    -- If full custom options exist, merge them
-    opts = vim.tbl_deep_extend('force', opts, custom_opts[server_name])
+    -- If full custom options exist, use them
+    opts = custom_opts[server_name]
   elseif custom_cmds[server_name] then
     -- Otherwise, if a custom command exists, use it
     opts.cmd = custom_cmds[server_name]
   end
 
-  lspconfig[server_name].setup(opts)
+  vim.lsp.config(server_name, opts)
 end
+
+vim.lsp.enable(servers)
 
 -- For jdtls, you need to specify the data directory.
 -- This path needs to be adjusted to your environment.
 -- local jdtls_path = vim.fn.expand('~/AppData/Local/nvim/plugin/jdtls')
--- lspconfig.jdtls.setup{
---     on_attach = on_attach,
---     capabilities = capabilities,
+-- vim.lsp.config('jdtls', {
 --     cmd = { 'java', '-Declipse.application=org.eclipse.jdt.ls.core.id1.XmlServerApplication', '-Dosgi.bundles.defaultStartLevel=4', '-Declipse.product=org.eclipse.jdt.ls.core.product', '-Dlog.protocol=true', '-Dlog.level=ALL', '-javaagent:' .. jdtls_path .. '/lombok.jar', '-Xms1g', '--add-modules=ALL-SYSTEM', '--add-opens', 'java.base/java.util=ALL-UNNAMED', '--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-jar', vim.fn.glob(jdtls_path .. '/plugins/org.eclipse.equinox.launcher_*.jar') },
 --     root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
 -- }
+-- vim.lsp.enable('jdtls')
 
 -- シンボルハイライトのためのautocmdグループを作成
 local lsp_highlight_group = vim.api.nvim_create_augroup('LspSymbolHighlight', { clear = true })
