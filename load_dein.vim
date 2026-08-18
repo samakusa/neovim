@@ -54,7 +54,11 @@ call dein#begin(s:dein_dir)
   " -------------------------
 
   " --- Syntax Highlighting Plugins ---
-  call dein#add('nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'})
+  " NOTE: pin explicitly to the `main` branch (the new, rewritten API that
+  " treesitter_settings.lua targets, requires Neovim 0.12+). The `master`
+  " branch is frozen/legacy and does not support Neovim 0.12; without this
+  " pin, a future upstream default-branch change could silently break setup.
+  call dein#add('nvim-treesitter/nvim-treesitter', {'rev': 'main', 'do': ':TSUpdate'})
   call dein#add('tomasr/molokai')
   " ---------------------------------
 
