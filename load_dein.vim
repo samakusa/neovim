@@ -26,7 +26,15 @@ call dein#begin(s:dein_dir)
   " --- Markdown Plugins ---
   call dein#add('godlygeek/tabular')
   call dein#add('preservim/vim-markdown')
-  call dein#add('iamcco/markdown-preview.nvim', { 'build': 'call mkdp#util#install()', 'on_ft': ['markdown', 'pandoc'] })
+  call dein#add('selimacerbas/live-server.nvim')
+  " NOTE: no on_ft lazy-load here (unlike the old iamcco/markdown-preview.nvim) because
+  " markdown_preview_settings.lua calls require('markdown_preview').setup({...}) eagerly
+  " from init.vim's startup `lua << EOF` block; on_ft would keep the plugin off the
+  " runtimepath until a markdown/pandoc buffer is opened, making that require() fail at
+  " startup (confirmed by a real dein#install() + headless nvim run during this migration).
+  " Matches the other Markdown plugins in this section (tabular, vim-markdown,
+  " vim-table-mode), none of which are on_ft-restricted either.
+  call dein#add('selimacerbas/markdown-preview.nvim', { 'depends': ['selimacerbas/live-server.nvim'] })
   call dein#add('dhruvasagar/vim-table-mode')
   " -------------------------
 

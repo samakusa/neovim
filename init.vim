@@ -57,6 +57,7 @@ lua << EOF
   package.path = package.path .. ';' .. config_path .. '/?.lua'
   require('lsp_settings')
   require('treesitter_settings')
+  require('markdown_preview_settings')
 EOF
 
 colorscheme molokai

@@ -1,0 +1,304 @@
+/* markdown_preview_toc.css
+ *
+ * selimacerbas/markdown-preview.nvim のブラウザプレビュー内に、見出し一覧(目次)の
+ * 折りたたみ式サイドバーを追加するためのファイル。markdown_preview_settings.lua から
+ * `custom_css` オプションでこのファイルが指定される。
+ *
+ * ---- 仕組み(公式サポート外の実装依存の抜け道であることに注意) ----------------------
+ * `custom_css` の実装 (selimacerbas/markdown-preview.nvim の lua/markdown_preview/init.lua
+ * write_index(), commit faf50b5 時点でソース確認済み) は、指定ファイルの中身を無加工のまま
+ * 開始style要素と終了style要素で挟んでheadの直前に文字列連結で挿入するだけで、エスケープ処理は
+ * 一切行われない。この性質を利用し、このファイルの中盤で意図的に終了style要素を書いて最初のCSS
+ * ブロックを閉じ、続けて開始script要素・JavaScript本体・終了script要素を書いて注入し、最後に
+ * 空の開始style要素を開いておくことで、挿入テンプレート側が末尾に付け足す本来の終了style要素と
+ * headの終了要素に辻褄を合わせている。
+ *
+ * 注意: このコメント自体の中でも、上記の説明のために実際のタグ記号(山括弧)を書いてしまうと、
+ * ブラウザのHTMLパーサーはCSS/JSのコメント構文を理解せず単純に「終了style要素の文字列」を
+ * 素朴に検索するため、このコメントの途中でstyle要素が意図せず終了してしまい機能全体が壊れる
+ * (実際にこれで壊れることをt76実装時に検証済み)。そのため、このファイル中で説明目的に山括弧付き
+ * タグを書く必要がある場合は、全角の山括弧(＜ ＞)を使うか、タグ記号を使わない言い回しに徹すること。
+ *
+ * これは公式にドキュメント化された拡張ポイントではない。将来 selimacerbas/markdown-preview.nvim側で
+ * custom_css の挿入処理にエスケープが入る等の変更があった場合、この見出し一覧サイドバー機能だけが
+ * 静かに動作しなくなる可能性がある(プレビュー自体・mermaid描画等の他機能には影響しない設計)。
+ * dein#update() 等でこのプラグインを更新した際は、プレビューを開いて目次ボタンが表示されるか
+ * 目視で確認すること。
+ * ------------------------------------------------------------------------------------
+ */
+
+:root {
+    --mp-toc-width: 280px;
+}
+
+/* サイドバー表示中は本文側(#content / .skeleton / #fm-panel)に本文幅分の右マージンを
+   付与し、左に押し出すことでサイドバーの下に本文が隠れないようにする。
+   #content / .skeleton は既存CSSで `max-width:900px; margin:0 auto` の中央寄せなので、
+   右マージンを固定するとブラウザの自動マージン計算により自然に左へ寄る(かつビューポートが
+   狭い場合は自動的に本文幅自体も詰まる。文字を縮小するtransform:scaleより可読性を保てるため
+   この方式を採用している)。#fm-panel は中央寄せされておらず全幅表示のため、右マージン分
+   そのまま幅が縮む。アニメーションはサイドバー本体のスライドと同じ .2s ease に揃えている。 */
+#content,
+.skeleton,
+#fm-panel {
+    transition: margin-right .2s ease;
+}
+
+body.mp-toc-body-shifted #content,
+body.mp-toc-body-shifted .skeleton,
+body.mp-toc-body-shifted #fm-panel {
+    margin-right: var(--mp-toc-width);
+}
+
+#mp-toc-toggle {
+    position: fixed;
+    right: 1rem;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .7rem;
+    border: 1px solid var(--stroke);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--fg);
+    font-family: inherit;
+    font-size: .8rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+
+#mp-toc-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+#mp-toc-panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: var(--mp-toc-width);
+    max-width: 86vw;
+    display: flex;
+    flex-direction: column;
+    background: var(--panel);
+    border-left: 1px solid var(--stroke);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, .25);
+    z-index: 39;
+    transform: translateX(calc(100% + 1rem));
+    transition: transform .2s ease;
+}
+
+#mp-toc-panel.mp-toc-open {
+    transform: translateX(0);
+}
+
+#mp-toc-panel-header {
+    padding: .7rem .9rem;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--fg-muted);
+    border-bottom: 1px solid var(--stroke);
+    flex: 0 0 auto;
+}
+
+#mp-toc-list {
+    overflow-y: auto;
+    padding: .4rem 0;
+    flex: 1 1 auto;
+}
+
+.mp-toc-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: .82rem;
+    line-height: 1.4;
+    padding-top: .32rem;
+    padding-bottom: .32rem;
+    padding-right: .8rem;
+    cursor: pointer;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.mp-toc-item:hover {
+    background: var(--stroke);
+    color: var(--accent);
+}
+
+.mp-toc-item-active {
+    border-left-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+#mp-toc-empty {
+    padding: .8rem .9rem;
+    font-size: .8rem;
+    color: var(--fg-muted);
+}
+
+/* サイドバー本体はスクロール可能な内側リストのみが対象。パネル自体は
+   position:fixed のため本文のスクロール(mermaidのフルスクリーン等)には影響しない。
+   #overlay (mermaidズーム/パンのフルスクリーン表示, z-index:100) より確実に下に
+   なるよう z-index を余裕を持って40/39に設定している。 */
+</style>
+<script>
+(function () {
+    'use strict';
+
+    var STORAGE_KEY = 'mp-toc-open';
+    var DEBOUNCE_MS = 200;
+
+    function ready(fn) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fn);
+        } else {
+            fn();
+        }
+    }
+
+    ready(init);
+
+    function init() {
+        var contentEl = document.getElementById('content');
+        if (!contentEl) return; // 想定外の構造変化に対する保険
+
+        var headerEl = document.querySelector('header');
+
+        // --- サイドバーDOMを構築 ---
+        var toggleBtn = document.createElement('button');
+        toggleBtn.id = 'mp-toc-toggle';
+        toggleBtn.type = 'button';
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.setAttribute('title', '見出し一覧を開く/閉じる');
+        toggleBtn.textContent = '☰ 目次'; // "☰ 目次"
+
+        var panel = document.createElement('aside');
+        panel.id = 'mp-toc-panel';
+        panel.setAttribute('aria-label', '見出し一覧');
+
+        var panelHeader = document.createElement('div');
+        panelHeader.id = 'mp-toc-panel-header';
+        panelHeader.textContent = '見出し一覧';
+
+        var list = document.createElement('nav');
+        list.id = 'mp-toc-list';
+
+        panel.appendChild(panelHeader);
+        panel.appendChild(list);
+        document.body.appendChild(toggleBtn);
+        document.body.appendChild(panel);
+
+        // --- 開閉状態(localStorageで記憶。デフォルトは閉。読めない環境でも動作継続) ---
+        var isOpen = false;
+        try {
+            isOpen = window.localStorage && localStorage.getItem(STORAGE_KEY) === '1';
+        } catch (e) { /* localStorage不可の環境でも致命的にしない */ }
+
+        function applyOpenState() {
+            panel.classList.toggle('mp-toc-open', !!isOpen);
+            toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            // #content 等を左に押し出して本文がサイドバーに隠れないようにする(CSS側の
+            // body.mp-toc-body-shifted ルールと対応)。
+            document.body.classList.toggle('mp-toc-body-shifted', !!isOpen);
+        }
+        applyOpenState();
+
+        toggleBtn.addEventListener('click', function () {
+            isOpen = !isOpen;
+            applyOpenState();
+            try {
+                if (window.localStorage) localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
+            } catch (e) { /* ignore */ }
+        });
+
+        // --- header の実測高さに追従してサイドバー/ボタンの上端位置を調整 ---
+        // header は position:sticky で高さがテーマ・内容により変わり得るため、
+        // 固定値を決め打ちせず起動時とリサイズ時に実測する。
+        function syncTopOffset() {
+            var h = headerEl ? headerEl.getBoundingClientRect().height : 0;
+            var top = Math.round(h + 8) + 'px';
+            toggleBtn.style.top = top;
+            panel.style.top = top;
+        }
+        syncTopOffset();
+        window.addEventListener('resize', syncTopOffset);
+
+        // --- 見出し一覧の構築 ---
+        function rebuildList() {
+            var headings = contentEl.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            list.innerHTML = '';
+
+            if (headings.length === 0) {
+                var empty = document.createElement('div');
+                empty.id = 'mp-toc-empty';
+                empty.textContent = '見出しがありません';
+                list.appendChild(empty);
+                return;
+            }
+
+            var minLevel = 6;
+            headings.forEach(function (h) {
+                var lvl = parseInt(h.tagName.substring(1), 10);
+                if (lvl < minLevel) minLevel = lvl;
+            });
+
+            headings.forEach(function (h) {
+                var text = (h.textContent || '').trim();
+                if (!text) return; // 空見出しはクリック対象として無意味なので一覧から除外
+
+                var level = parseInt(h.tagName.substring(1), 10);
+                var item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'mp-toc-item mp-toc-level-' + level;
+                item.style.paddingLeft = (10 + (level - minLevel) * 14) + 'px';
+                item.textContent = text;
+
+                // href="#id" / location.hash は使わない。selimacerbas/markdown-preview.nvim が
+                // 使っている markdown-it-anchor のslugify関数は非Unicode対応の \w ベースのため、
+                // 日本語のみの見出しは id="" や id="-" のような意味のない値になり(重複時は連番接尾辞)、
+                // アンカーリンクでは確実にジャンプできないことを実地検証済み(t75調査、node.jsで
+                // 実際に markdown-it + markdown-it-anchor@9.2.0 を同じ設定で動かして確認)。
+                // そのため見出しDOM要素への直接参照をクロージャで保持し、scrollIntoView() で
+                // ジャンプする(idの値に一切依存しないので日本語見出しでも確実に機能する)。
+                item.addEventListener('click', function () {
+                    h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    var actives = list.querySelectorAll('.mp-toc-item-active');
+                    for (var i = 0; i < actives.length; i++) actives[i].classList.remove('mp-toc-item-active');
+                    item.classList.add('mp-toc-item-active');
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        rebuildList();
+
+        // --- プレビュー内容の更新を検知して見出し一覧を再構築 ---
+        // このプラグインはSSE通知を受けて #content 配下を morphdom で差分更新する実装
+        // (assets/index.html の sync() 関数。<script type="module"> のクロージャ内にあり
+        // 外部から直接フックする手段が無いことをソースで確認済み)。そのため実装の詳細に
+        // 依存しない汎用的な MutationObserver で更新を検知する。1回の morphdom 適用で
+        // 複数の変更が発生するため、短いデバウンスでまとめて再構築する。
+        var rebuildTimer = null;
+        var observer = new MutationObserver(function () {
+            if (rebuildTimer) clearTimeout(rebuildTimer);
+            rebuildTimer = setTimeout(rebuildList, DEBOUNCE_MS);
+        });
+        observer.observe(contentEl, { childList: true, subtree: true, characterData: true });
+    }
+})();
+</script>
+<style>
+/* 上のscriptブロックの後、markdown-preview.nvim 側の挿入テンプレートが続けて
+   書き出す本来の終了style要素・終了head要素と対になるよう、この空のstyleブロックを
+   開いたままファイルを終える(このコメント中に本物のタグ記号を書かないこと。理由は
+   ファイル冒頭のコメントを参照)。 */
