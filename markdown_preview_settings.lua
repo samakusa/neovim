@@ -20,8 +20,19 @@
 -- オプション一覧は公式README(https://github.com/selimacerbas/markdown-preview.nvim)の
 -- デフォルト値をそのまま明示している。mermaid図のズーム/パン/フルスクリーン/SVGエクスポートは
 -- ブラウザUI側の標準機能であり、setup()側のオプションでの有効化は不要。
+--
+-- instance_mode は 'takeover' から 'multi' に変更済み(2026年8月)。ただし plugin本体
+-- (lua/markdown_preview/init.lua)のソースを確認したところ、'takeover'/'multi' いずれも
+-- M._server_instance 等がモジュールレベルの単一変数(バッファ単位ではなくNeovim
+-- "プロセス"単位)として管理されており、この設定はNeovimプロセスごとにサーバー/ポート/
+-- ブラウザタブを分けるかどうかにのみ関わる。**同一Neovimプロセス内で複数バッファに対して
+-- :MarkdownPreviewを実行した場合は、'multi'に変更した後もサーバーが1つに集約され、
+-- 後から開いたファイルの内容で上書き表示される(実機で動作確認済み)。** 複数ファイルを
+-- 真に同時プレビューしたい場合は、ファイルごとに別のNeovimプロセスを起動する運用でのみ
+-- 現状は有効。プラグイン本体の改修(バッファ単位でのサーバーインスタンス管理)が必要な場合は
+-- selimacerbas/markdown-preview.nvimをフォークしてパッチを当てる方針を別途検討する。
 require('markdown_preview').setup({
-  instance_mode = 'takeover',  -- 'takeover'(全Neovimインスタンスでタブ共有) or 'multi'(インスタンスごとに別タブ)
+  instance_mode = 'multi',     -- 'takeover'(全Neovimインスタンスでタブ共有) or 'multi'(インスタンスごとに別タブ)
   port = 0,                    -- 0 = 自動 (takeoverでは8421)
   host = '127.0.0.1',          -- ローカルのみにバインド
   open_browser = true,         -- プレビュー開始時にブラウザを自動で開く
