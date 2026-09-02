@@ -21,7 +21,7 @@ local jdtls = require('jdtls')
 -- キャッシュされたモジュールテーブルが返るだけ)
 local lsp_settings = require('lsp_settings')
 
-local root_dir = jdtls.setup.find_root(root_markers)
+local root_dir = require('jdtls.setup').find_root(root_markers)
 if not root_dir then
   -- ルートマーカーが見つからない場合は起動しない(単発のjavaファイルを開いただけ等)。
   return
