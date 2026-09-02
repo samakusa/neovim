@@ -78,9 +78,13 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>q', '<Cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 end
 
--- Define all servers to be managed by lspconfig
+-- Define all servers to be managed by lspconfig.
+-- NOTE: jdtls (Java) is intentionally NOT included here. It is set up
+-- separately via nvim-jdtls's own API in ftplugin/java.lua, because it needs
+-- a per-project workspace data dir (`-data`) and other jdtls-specific setup
+-- that doesn't fit this shared, default-config-only loop.
 local servers = {
-  'ruff', 'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'jdtls', 'csharp_ls', 
+  'ruff', 'pyright', 'rust_analyzer', 'ts_ls', 'clangd', 'csharp_ls',
   'vimls', 'html', 'cssls', 'jsonls', 'lua_ls', 'powershell_es', 'eslint'
 }
 
@@ -165,15 +169,6 @@ end
 
 vim.lsp.enable(servers)
 
--- For jdtls, you need to specify the data directory.
--- This path needs to be adjusted to your environment.
--- local jdtls_path = vim.fn.expand('~/AppData/Local/nvim/plugin/jdtls')
--- vim.lsp.config('jdtls', {
---     cmd = { 'java', '-Declipse.application=org.eclipse.jdt.ls.core.id1.XmlServerApplication', '-Dosgi.bundles.defaultStartLevel=4', '-Declipse.product=org.eclipse.jdt.ls.core.product', '-Dlog.protocol=true', '-Dlog.level=ALL', '-javaagent:' .. jdtls_path .. '/lombok.jar', '-Xms1g', '--add-modules=ALL-SYSTEM', '--add-opens', 'java.base/java.util=ALL-UNNAMED', '--add-opens', 'java.base/java.lang=ALL-UNNAMED', '-jar', vim.fn.glob(jdtls_path .. '/plugins/org.eclipse.equinox.launcher_*.jar') },
---     root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
--- }
--- vim.lsp.enable('jdtls')
-
 -- シンボルハイライトのためのautocmdグループを作成
 local lsp_highlight_group = vim.api.nvim_create_augroup('LspSymbolHighlight', { clear = true })
 
@@ -201,3 +196,15 @@ vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
     vim.lsp.buf.clear_references()
   end,
 })
+
+-- on_attach/capabilitiesをモジュールとしてエクスポートする。
+-- jdtls(Java)はこのファイルの共通ループではなくftplugin/java.luaで個別に
+-- セットアップされるが、キーマップやnvim-cmp連携(capabilities)は他言語と
+-- 揃えたいため、require('lsp_settings')経由でここから再利用する。
+-- (init.vimのlua << EOFブロックで既にrequire('lsp_settings')済みのため、
+-- ここから再度requireしても副作用が再実行されることはなく、キャッシュされた
+-- このモジュールテーブルが返るだけ)
+return {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}

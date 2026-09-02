@@ -55,6 +55,14 @@ execute 'source' s:config_dir . '/markdown-preview-settings.vim'
 lua << EOF
   local config_path = vim.fn.stdpath('config')
   package.path = package.path .. ';' .. config_path .. '/?.lua'
+
+  -- プロジェクトルートに置かれたローカルの .nvim.lua / .exrc を自動読み込みする。
+  -- 'secure' は既定値のまま(明示的にOFFにしない)ことで、これらのローカル設定ファイルは
+  -- autocmd/シェルコマンド実行等が制限されたサンドボックス内で実行される(:h 'exrc', :h 'secure')。
+  -- 主にJava(jdtls)のプロジェクトごとの上書き設定(vim.g.jdtls_project_overrides、
+  -- 詳細はdocs/基本設計書.mdおよびftplugin/java.luaを参照)に利用する想定。
+  vim.o.exrc = true
+
   require('lsp_settings')
   require('treesitter_settings')
   require('markdown_preview_settings')
