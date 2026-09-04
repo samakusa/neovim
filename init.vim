@@ -25,7 +25,7 @@ set shiftwidth=4
 set expandtab
 set laststatus=2
 set statusline=%F%m%r%h%w\%=[TYPE=%Y]\[FORMAT=%{&ff}]\[ENC=%{&fileencoding}]\[LOW=%l/%L]
-set signcolumn=number
+set signcolumn=no
 set list
 set listchars=eol:$,tab:`\ ,trail:@
 set splitright
