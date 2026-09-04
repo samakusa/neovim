@@ -64,3 +64,37 @@ require('gitsigns').setup({
     end)
   end,
 })
+
+-- linehl(行背景色)用のGitSigns*Lnハイライトグループは、既定では(colorscheme側に
+-- 専用定義が無い場合)DiffAdd/DiffChange等にリンクされ、これらは背景色だけでなく
+-- 前景色(fg)も持つ。結果として変更行の文字が(colorscheme依存の)灰色等で塗り
+-- つぶされ、シンタックスハイライトが読みにくくなる。
+-- 「背景色は変更するが文字色は元のシンタックスハイライトのまま」にしたいため、
+-- 現在解決されている背景色のみを引き継いだ形で各グループを再定義し、fgは
+-- 一切指定しない(=そのグループ単体としてはfgを持たない状態にする。extmarkの
+-- ハイライト合成では、指定していない属性は下層のシンタックスハイライトの値が
+-- そのまま使われる)。
+local function strip_linehl_fg()
+  for _, name in ipairs({
+    'GitSignsAddLn', 'GitSignsChangeLn', 'GitSignsChangedeleteLn', 'GitSignsUntrackedLn',
+    'GitSignsStagedAddLn', 'GitSignsStagedChangeLn', 'GitSignsStagedChangedeleteLn', 'GitSignsStagedUntrackedLn',
+  }) do
+    local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+    if hl.bg then
+      vim.api.nvim_set_hl(0, name, { bg = hl.bg })
+    end
+  end
+end
+
+strip_linehl_fg()
+
+-- gitsigns自身も`ColorScheme`イベントでこれらのハイライトを再定義し直す
+-- (`:h gitsigns-highlight-groups`)。`:colorscheme`はハイライトを一旦クリアしてから
+-- 再定義するため、上記の初回呼び出しだけではcolorscheme切り替え後にfgが復活して
+-- しまう。gitsigns自身のColorSchemeオートコマンドより後に実行されるよう、
+-- gitsigns.setup()呼び出しの後でこちらのオートコマンドを登録する
+-- (同一イベントに対する複数グループのオートコマンドは登録順に実行される)。
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('GitSignsLinehlFgFix', { clear = true }),
+  callback = strip_linehl_fg,
+})
