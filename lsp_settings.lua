@@ -1,6 +1,12 @@
--- 診断マーク(E, Wなど)を左端に表示しないようにする
+-- 診断マーク(E, Wなど)を左端に表示しないようにする(signs=false)。
+-- また、診断メッセージの常時インライン表示(virtual_text)もオフにする。
+-- gitsignsの差分プレビュー(preview_hunk_inline等)の表示と視覚的に競合するため、
+-- 診断メッセージはon_attach内の<space>e(vim.diagnostic.open_float())で
+-- トリガーキー入力時にのみ確認する運用に変更した。underlineは既定値(true)の
+-- ままにしており、エラー箇所への波線は引き続き常時表示される(背景/前景色を
+-- 変えたり画面を覆ったりしないため、gitsignsの表示とは競合しない)。
 vim.diagnostic.config({
-  virtual_text = true,
+  virtual_text = false,
   signs = false,
   severity_sort = true,
 })
@@ -48,18 +54,6 @@ local on_attach = function(client, bufnr)
   -- Mappings.
   local opts = { noremap=true, silent=true }
 
-  -- カーソルホバーで診断メッセージをフロート表示する
-  vim.api.nvim_create_autocmd('CursorHold', {
-    buffer = bufnr,
-    callback = function()
-      vim.diagnostic.open_float(nil, {
-        scope = 'line',      -- 現在行の診断のみ表示
-        source = 'always',   -- 診断のソース元(LSP名等)を常に表示
-        focusable = false,   -- フロートウィンドウにフォーカスしない
-      })
-    end
-  })
-
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
@@ -72,7 +66,13 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>rn', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<space>ca', '<Cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<Cmd>lua vim.diagnostic.open_float()<CR>', opts)
+  -- カーソル位置(行)の診断をフロート表示する(トリガーキー)。
+  -- カーソルを動かすと自動的に閉じる(vim.lsp.util.open_floating_previewの既定の
+  -- close_events = {CursorMoved, CursorMovedI, InsertCharPre}による)。
+  -- かつて存在したCursorHold自動フロート(カーソル静止で無条件に出現していた)を
+  -- 廃止したため、その際に指定していたscope/source/focusableをここに引き継ぎ、
+  -- 表示内容を揃えている。
+  buf_set_keymap('n', '<space>e', '<Cmd>lua vim.diagnostic.open_float(nil, { scope = "line", source = "always", focusable = false })<CR>', opts)
   buf_set_keymap('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<Cmd>lua vim.diagnostic.setloclist()<CR>', opts)
