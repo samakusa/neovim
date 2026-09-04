@@ -7,6 +7,7 @@ let g:vista_default_executive = 'ctags'
 " ctagsのインストールについては後述の「必要な外部ツール」を参照ください。
 let g:vista_ctags_cmd = {
 \ 'markdown': 'ctags --language-force=markdown --markdown-kinds=h --fields=+K',
+\ 'java': 'ctags --format=2 --excmd=pattern --fields=+nksSaf-PF --extras=+F --sort=no --append=no --language-force=java --java-kinds=pfgeaicm --output-format=json -f -',
 \ }
 
 " 自動非表示機能を制御するグローバル変数を定義
