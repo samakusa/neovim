@@ -61,6 +61,10 @@ call dein#begin(s:dein_dir)
   call dein#add('mfussenegger/nvim-jdtls')
   " -------------------------
 
+  " --- Git差分表示プラグイン ---
+  call dein#add('lewis6991/gitsigns.nvim')
+  " -----------------------------
+
   " --- Syntax Highlighting Plugins ---
   " NOTE: pin explicitly to the `main` branch (the new, rewritten API that
   " treesitter_settings.lua targets, requires Neovim 0.12+). The `master`

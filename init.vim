@@ -66,6 +66,7 @@ lua << EOF
   require('lsp_settings')
   require('treesitter_settings')
   require('markdown_preview_settings')
+  require('gitsigns_settings')
 EOF
 
 colorscheme molokai
