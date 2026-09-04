@@ -1,20 +1,20 @@
 -- lewis6991/gitsigns.nvim の設定
 --
--- Gitで変更のある行をsign column(番号列。init.vimの`set signcolumn=number`により
--- 番号列に統合表示される)+行全体の背景色(VSCode風)でハイライトし、
--- hunk単位でのプレビュー・移動・リセットを行うためのキーマップを提供する。
--- 表示(sign column・行背景色)は起動直後は非表示(OFF)で、<space>gtキーで
--- 必要な時だけONにする運用にしている。
+-- Gitで変更のある行をsign column(init.vimで`signcolumn=no`としているため実際には
+-- 非表示)+行全体の背景色(VSCode風、linehl)でハイライトし、hunk単位での
+-- プレビュー・移動・リセットを行うためのキーマップを提供する。
+-- 表示(sign column・行背景色)は起動直後からON。<space>gtキーで必要な時に
+-- OFF/ONをトグルできる。
 --
 -- lsp_settings.luaのon_attach(LSPクライアントattach時にバッファローカルな
 -- キーマップを設定する)と同様のパターンで、gitsignsがバッファにattachした際
 -- (=そのバッファがgit管理下にある場合のみ)にバッファローカルキーマップを設定する。
 
 require('gitsigns').setup({
-  -- 起動直後は差分表示(sign column・行背景色)を非表示にしておく。
-  -- 必要な時だけ<space>gt(下記on_attach内)で明示的にONにする運用。
-  signcolumn = false,
-  linehl = false,
+  -- 起動直後から差分表示(sign column・行背景色)を有効にする。
+  -- 必要な時は<space>gt(下記on_attach内)でOFF/ONをトグルできる。
+  signcolumn = true,
+  linehl = true,
 
   on_attach = function(bufnr)
     local gitsigns = require('gitsigns')
@@ -57,9 +57,9 @@ require('gitsigns').setup({
     -- gitsignsにはこれらをまとめて切り替える単一のAPIが無いため、
     -- toggle_signs()/toggle_linehl()を明示的なbool値で同期させて呼び出す
     -- (:h gitsigns.toggle_signs / :h gitsigns.toggle_linehl 参照)。
-    -- 起動直後はsetup()側でsigncolumn/linehlともにfalse(非表示)にしているため、
-    -- ここも false から始め、最初の<space>gtでON(true)になるようにする。
-    local display_enabled = false
+    -- 起動直後はsetup()側でsigncolumn/linehlともにtrue(表示)にしているため、
+    -- ここも true から始め、最初の<space>gtでOFF(false)になるようにする。
+    local display_enabled = true
     map('n', '<space>gt', function()
       display_enabled = not display_enabled
       gitsigns.toggle_signs(display_enabled)
