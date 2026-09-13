@@ -48,7 +48,20 @@ require('gitsigns').setup({
     end)
 
     -- カーソル位置のhunkの差分をバッファ内にインライン表示(トグル。再実行で閉じる)。
-    map('n', '<space>hp', gitsigns.preview_hunk_inline)
+    -- gitsigns標準のpreview_hunk_inline()は、ウィンドウ幅を超える削除行を
+    -- 折り返さずに切り詰めてしまう不具合があるため、gitsigns_wrap_preview.lua
+    -- (gitsignsの非公開内部実装には依存せず、公開APIのみで自前実装した折り返し
+    -- 対応版)に置き換えている。詳細はgitsigns_wrap_preview.lua冒頭のコメントを参照。
+    map('n', '<space>hp', function()
+      require('gitsigns_wrap_preview').preview_hunk_inline()
+    end)
+
+    -- <space>hp の折り返し表示自体のON/OFFをトグルする(既存の<space>gt=
+    -- gitsigns全体の表示トグルとは別物)。OFF時は本来のgitsigns標準の
+    -- preview_hunk_inline()(切り詰め版)にフォールバックする。
+    map('n', '<space>hw', function()
+      require('gitsigns_wrap_preview').toggle_wrap_preview()
+    end)
 
     -- カーソル位置のhunkを変更前(コミット済み)の内容に戻す。
     map('n', '<space>hr', gitsigns.reset_hunk)
